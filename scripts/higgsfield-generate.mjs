@@ -5,7 +5,7 @@
 // finished video/image file from the command line.
 //
 // Usage:
-//   HF_API_BASE_URL=https://platform.higgsfield.ai HF_API_KEY=id:secret \
+//   HF_API_BASE_URL=https://api.higgsfield.ai HF_API_KEY=id:secret \
 //     node scripts/higgsfield-generate.mjs \
 //       --model seedance-2 \
 //       --prompt "a small red fox sitting in a snowy forest, cinematic lighting" \
@@ -104,7 +104,7 @@ async function main() {
 
   const pollMs = Number(args["poll-seconds"]) * 1000;
   const deadline = Date.now() + Number(args["timeout-minutes"]) * 60_000;
-  const TERMINAL = new Set(["completed", "succeeded", "failed", "error", "canceled", "cancelled", "nsfw"]);
+  const TERMINAL = new Set(["completed", "failed", "canceled", "nsfw"]);
 
   let final;
   while (Date.now() < deadline) {
@@ -117,7 +117,7 @@ async function main() {
     }
   }
   if (!final) throw new Error("Timed out waiting for a terminal status");
-  if (final.status !== "completed" && final.status !== "succeeded") {
+  if (final.status !== "completed") {
     throw new Error(`Generation ended with status "${final.status}": ${JSON.stringify(final.error ?? final)}`);
   }
 
